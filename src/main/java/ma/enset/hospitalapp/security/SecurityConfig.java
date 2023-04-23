@@ -20,14 +20,17 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(
                 User.withUsername("user1").password(passwordEncoder.encode("123")).roles("USER").build(),
                 User.withUsername("user2").password(passwordEncoder.encode("123")).roles("USER").build(),
-                User.withUsername("admin").password(passwordEncoder.encode("123")).roles("USER,ADMIN").build()
+                User.withUsername("admin").password(passwordEncoder.encode("123")).roles("USER","ADMIN").build()
 
         );
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.formLogin();
+        httpSecurity.formLogin().loginPage("/login").permitAll();
+        httpSecurity.authorizeHttpRequests().requestMatchers("/user/*").hasRole("USER");
+        httpSecurity.authorizeHttpRequests().requestMatchers("/admin/*").hasRole("ADMIN");
         httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
+        httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
         return httpSecurity.build();
     }
 }
