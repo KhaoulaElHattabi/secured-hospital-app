@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Hospital</title>
@@ -26,9 +26,16 @@
     </ul>
     <ul class="navbar-nav">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">[User]</a>
+            <a class="nav-link dropdown-toggle" href="#" role="button"
+               data-bs-toggle="dropdown" th:text="${#authentication.name}">
+
+            </a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Logout</a></li>
+                <li>
+                    <form method="post" th:action="@{/logout}">
+                      <button  <a class="dropdown-item" type="submit">Logout</a></button>
+                    </form>
+                </li>
                 <li><a class="dropdown-item" href="#">Profile</a></li>
             </ul>
         </li>
