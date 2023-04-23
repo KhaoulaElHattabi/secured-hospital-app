@@ -6,6 +6,7 @@ import ma.enset.hospitalapp.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +35,7 @@ public class PatientController {
         return "patients";
     }
     @GetMapping("/admin/deletePatient")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deletePatient(Long id , String keyword , int page) {
         patientRepository.deleteById(id);
         return "redirect:/user/index?page="+page+"&keyword="+keyword;
@@ -47,13 +49,16 @@ public class PatientController {
     public List<Patient> listPatients(){
         return patientRepository.findAll();
     }
+
     @GetMapping("/admin/formPatient")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String formPatients(Model model){
         model.addAttribute("patient",new Patient());
         return "formPatient";
     }
 
     @PostMapping(path = "/admin/savePatient")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String savePatient(Model model, @Valid Patient patient, BindingResult bindingResult, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String keyword){
         if(bindingResult.hasErrors()) return "formPatient";
         patientRepository.save(patient);
@@ -61,6 +66,7 @@ public class PatientController {
     }
 
     @GetMapping("/admin/editPatient")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editPatient(Model model, Long id, String keyword , int page){
         Patient patient =patientRepository.findById(id).get();
         if(patient==null) throw new RuntimeException("Patient Introuvable");
